@@ -11,7 +11,10 @@ from models.state import State
 def listing_allsts():
     """This function will list alll the state objs"""
     tot_sts = storage.all(State).values()
-    return jsonify([onest.to_dict() for onest in tot_sts])
+    sts_ls = []
+    for onest in tot_sts:
+        sts_ls.append(onest.to_dict())
+    return jsonify(sts_ls)
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
