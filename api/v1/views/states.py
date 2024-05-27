@@ -61,7 +61,8 @@ def editing_st(state_id):
         abort(400, description="Not a JSON")
     fetched = request.get_json()
     for fk, fv in fetched.items():
-        if hasattr(target, fk) and fk not in ['id', 'created_at', 'updated_at']:
+        if hasattr(target, fk) and \
+           fk not in ['id', 'created_at', 'updated_at']:
             setattr(target, fk, fv)
     storage.save()
     return jsonify(target.to_dict()), 200
