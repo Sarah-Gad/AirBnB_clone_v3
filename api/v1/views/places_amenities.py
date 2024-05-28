@@ -28,7 +28,7 @@ def listingall_amens(place_id):
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                  methods=['DELETE'], strict_slashes=False)
 def removing_anem(place_id, amenity_id):
-    """This fucntio removes a specific anemity 
+    """This fucntio removes a specific anemity
     form a specicif place"""
     tar_plc = storage.get(Place, place_id)
     if not tar_plc:
@@ -46,7 +46,6 @@ def removing_anem(place_id, amenity_id):
         tar_plc.amenity_ids.remove(amenity_id)
     storage.save()
     return make_response(jsonify({}), 200)
-
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'],
