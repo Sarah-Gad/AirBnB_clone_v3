@@ -39,8 +39,8 @@ def removing_plc(place_id):
     tar_plc = storage.get(Place, place_id)
     if tar_plc is None:
         abort(404)
-    tar_plc.delete()
-    tar_plc.save()
+    storage.delete(tar_plc)
+    storage.save()
     return make_response(jsonify({}), 200)
 
 
@@ -61,7 +61,7 @@ def makingnw_plc(city_id):
         abort(404)
     fetched['city_id'] = city_id
     newly_created = Place(**fetched)
-    storage.save()
+    newly_created.save()
     return make_response(jsonify(newly_created.to_dict()), 201)
 
 
