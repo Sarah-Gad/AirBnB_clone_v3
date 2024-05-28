@@ -54,14 +54,14 @@ def making_new_amen():
         '/amenities/<amenity_id>', methods=['PUT'], strict_slashes=False)
 def editing_amen(amenity_id):
     """this fucntion will edit the anemity obj"""
-    target_amen = storage.get(Amenity, amenity_id)
-    if target_amen is None:
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    tar_amen = storage.get(Amenity, amenity_id)
+    if not tar_amen:
         abort(404)
     fetched = request.get_json()
-    if not fetched:
-        abort(400, description='Not a JSON')
     for fk, fv in fetched.items():
         if fk not in ['id', 'created_at', 'updated_at']:
-            setattr(target_amen, fk, fv)
+            setattr(tar_amen, fk, fv)
     storage.save()
-    return make_response(jsonify(target_amen.to_dict()), 200)
+    return make_response(jsonify(tar_amen.to_dict()), 200)
