@@ -55,6 +55,8 @@ def makingnw_plc(city_id):
         abort(404)
     if not request.get_json():
         abort(400, description="Not a JSON")
+    if 'user_id' not in request.get_json():
+        abort(400, description="Missing user_id")
     fetched = request.get_json()
     tar_usr = storage.get(User, fetched['user_id'])
     if not tar_usr:
