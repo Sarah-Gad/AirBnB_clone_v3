@@ -46,7 +46,7 @@ def making_new_amen():
     if 'name' not in fetched:
         abort(400, description='Missing name')
     newly_created = Amenity(**fetched)
-    storage.save()
+    newly_created.save()
     return make_response(jsonify(newly_created.to_dict()), 201)
 
 
