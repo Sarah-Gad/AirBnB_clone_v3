@@ -47,7 +47,7 @@ def making_new_amen():
         abort(400, description="Not a JSON")
     if 'name' not in request.get_json():
         abort(400, description="Missing name")
-    fetched= request.get_json()
+    fetched = request.get_json()
     new_amen = Amenity(**fetched)
     new_amen.save()
     return make_response(jsonify(new_amen.to_dict()), 201)
