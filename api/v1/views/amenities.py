@@ -10,8 +10,11 @@ from models.amenity import Amenity
 @app_views.route('/amenities', methods=['GET'], strict_slashes=False)
 def listing_all_amens():
     """this fucntion will list all of the amenity objs"""
-    tot_amen = storage.all(Amenity).values()
-    return jsonify([oneam.to_dict() for oneam in tot_amen])
+    tot_anems = storage.all(Amenity).values()
+    amens_ls = []
+    for onea in tot_anems:
+        amens_ls.append(onea.to_dict())
+    return jsonify(amens_ls)
 
 
 @app_views.route(
@@ -20,7 +23,7 @@ def listingone_amen(amenity_id):
     """this fucntion will get a specific
     amenity based on its id"""
     target_amen = storage.get(Amenity, amenity_id)
-    if target_amen is None:
+    if not target_amen:
         abort(404)
     return jsonify(target_amen.to_dict())
 
@@ -30,7 +33,7 @@ def listingone_amen(amenity_id):
 def removing_amen(amenity_id):
     """this fucntion will remove a specific anemity obj"""
     target_amen = storage.get(Amenity, amenity_id)
-    if target_amen is None:
+    if not target_amen:
         abort(404)
     storage.delete(target_amen)
     storage.save()
@@ -40,14 +43,14 @@ def removing_amen(amenity_id):
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
 def making_new_amen():
     """this fucntion will create a new anemity obj"""
-    fetched = request.get_json()
-    if not fetched:
-        abort(400, description='Not a JSON')
-    if 'name' not in fetched:
-        abort(400, description='Missing name')
-    newly_created = Amenity(**fetched)
-    newly_created.save()
-    return make_response(jsonify(newly_created.to_dict()), 201)
+    if not request.get_json():
+        abort(400, description="Not a JSON")
+    if 'name' not in request.get_json():
+        abort(400, description="Missing name")
+    fetched= request.get_json()
+    new_amen = Amenity(**fetched)
+    new_amen.save()
+    return make_response(jsonify(new_amen.to_dict()), 201)
 
 
 @app_views.route(
