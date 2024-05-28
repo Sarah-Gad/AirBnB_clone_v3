@@ -7,6 +7,8 @@ from api.v1.views import app_views
 from models.user import User
 from models.place import Place
 from models.city import City
+from models.state import State
+from models.amenity import Amenity
 
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'],
@@ -14,10 +16,10 @@ from models.city import City
 def listing_places(city_id):
     """this function will list all the places objs"""
     tar_ct = storage.get(City, city_id)
-    if tar_ct is None:
+    if not tar_ct:
         abort(404)
-    tot_plcz = tar_ct.places
-    return jsonify([onep.to_dict() for onep in tot_plcz])
+    tot_plczz = [onep.to_dict() for onep in tar_ct.places]
+    return jsonify(tot_plczz)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'],
@@ -26,7 +28,7 @@ def listingone_plc(place_id):
     """this method will get a specific
     place obj based it its id"""
     tar_plc = storage.get(Place, place_id)
-    if tar_plc is None:
+    if not tar_plc:
         abort(404)
     return jsonify(tar_plc.to_dict())
 
@@ -37,7 +39,7 @@ def removing_plc(place_id):
     """this fucntion will remove the specifi
     plc pbj based on its id"""
     tar_plc = storage.get(Place, place_id)
-    if tar_plc is None:
+    if not tar_plc:
         abort(404)
     storage.delete(tar_plc)
     storage.save()
@@ -49,16 +51,16 @@ def removing_plc(place_id):
 def makingnw_plc(city_id):
     """this fucntion will create a new plc pbj"""
     tar_ct = storage.get(City, city_id)
-    if tar_ct is None:
+    if not tar_ct:
         abort(404)
     if not request.get_json():
         abort(400, description="Not a JSON")
     fetched = request.get_json()
     tar_usr = storage.get(User, fetched['user_id'])
-    if tar_usr is None:
+    if not tar_usr:
         abort(404)
-    if 'name' not in fetched:
-        abort(404)
+    if 'name' not in request.get_json():
+        abort(400, description="Missing name")
     fetched['city_id'] = city_id
     newly_created = Place(**fetched)
     newly_created.save()
@@ -70,11 +72,11 @@ def makingnw_plc(city_id):
 def editing_plc(place_id):
     """this fucntion will edit the plc obj"""
     tar_plc = storage.get(Place, place_id)
-    if tar_plc is None:
+    if not tar_plc:
         abort(404)
-    if not request.get_json():
-        abort(400, description="Not a JSON")
     fetched = request.get_json()
+    if not fetched:
+        abort(400, description="Not a JSON")
     for fk, fv in fetched.items():
         if fk not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
             setattr(tar_plc, fk, fv)
